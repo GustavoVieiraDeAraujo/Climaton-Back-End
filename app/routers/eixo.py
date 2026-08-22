@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.constants import resolve_eixo
+from app.constants import regiao_do_territorio, resolve_eixo
 from app.db import query
 
 router = APIRouter(prefix="/eixo/{slug}", tags=["eixo"])
@@ -47,6 +47,40 @@ def eixo_territorios(slug: str):
         "total": len(rows),
         "fonte": f"avaliacoes + componentes + entidades, eixo='{eixo}' - média de score_padronizado por "
                  "território (todos os componentes do eixo), 51 territórios subnacionais.",
+    }
+
+
+@router.get("/regioes")
+def eixo_regioes(slug: str):
+    eixo = resolve_eixo(slug)
+    rows = query(
+        """
+        SELECT e.nome AS territorio, e.tipo, ROUND(AVG(a.score_padronizado), 3) AS media
+        FROM avaliacoes a
+        JOIN componentes c ON c.componente_id = a.componente_id
+        JOIN entidades e ON e.entidade_id = a.entidade_id
+        WHERE c.eixo = ? AND a.fonte_id = 1 AND a.score_padronizado IS NOT NULL
+          AND e.nivel_geografico = 'Subnacional'
+        GROUP BY e.entidade_id, e.nome, e.tipo
+        """,
+        (eixo,),
+    )
+    por_regiao: dict[str, list[float]] = {}
+    for r in rows:
+        regiao = regiao_do_territorio(r["territorio"], r["tipo"])
+        if regiao:
+            por_regiao.setdefault(regiao, []).append(r["media"])
+    ordem = ["Norte", "Nordeste", "Centro-Oeste", "Sudeste", "Sul"]
+    dados = [
+        {"regiao": regiao, "media": round(sum(v) / len(v), 3), "n_territorios": len(v)}
+        for regiao in ordem if (v := por_regiao.get(regiao))
+    ]
+    return {
+        "eixo": eixo,
+        "dados": dados,
+        "fonte": f"avaliacoes + componentes + entidades, eixo='{eixo}' - média de score_padronizado por "
+                 "território, agrupada por macrorregião IBGE (mapeamento fixo território->UF->região, "
+                 "não vem do banco - ver app/constants.py).",
     }
 
 

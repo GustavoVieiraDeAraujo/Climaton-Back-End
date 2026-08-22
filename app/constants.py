@@ -24,6 +24,43 @@ CAPITAL_UF = {
     "Boa Vista": "RR", "Florianópolis": "SC", "São Paulo": "SP", "Aracaju": "SE", "Palmas": "TO",
 }
 
+# Nome do estado (como aparece em entidades.nome, tipo='Estado') -> UF. Não existe no banco
+# (entidades só guarda o nome por extenso) - lista fixa dos 26 estados, fonte: IBGE.
+ESTADO_UF = {
+    "Acre": "AC", "Alagoas": "AL", "Amapá": "AP", "Amazonas": "AM", "Bahia": "BA",
+    "Ceará": "CE", "Espírito Santo": "ES", "Goiás": "GO", "Maranhão": "MA",
+    "Mato Grosso": "MT", "Mato Grosso do Sul": "MS", "Minas Gerais": "MG", "Pará": "PA",
+    "Paraíba": "PB", "Paraná": "PR", "Pernambuco": "PE", "Piauí": "PI",
+    "Rio de Janeiro": "RJ", "Rio Grande do Norte": "RN", "Rio Grande do Sul": "RS",
+    "Rondônia": "RO", "Roraima": "RR", "Santa Catarina": "SC", "São Paulo": "SP",
+    "Sergipe": "SE", "Tocantins": "TO",
+}
+
+# UF -> uma das 5 macrorregiões oficiais do IBGE. Distrito Federal fica em Centro-Oeste
+# geograficamente, mas continua sendo sua própria categoria de tipo (nem estado, nem
+# município) em todo o resto do site - aqui é só localização geográfica, não reclassificação.
+UF_REGIAO = {
+    "AC": "Norte", "AP": "Norte", "AM": "Norte", "PA": "Norte", "RO": "Norte",
+    "RR": "Norte", "TO": "Norte",
+    "AL": "Nordeste", "BA": "Nordeste", "CE": "Nordeste", "MA": "Nordeste",
+    "PB": "Nordeste", "PE": "Nordeste", "PI": "Nordeste", "RN": "Nordeste", "SE": "Nordeste",
+    "GO": "Centro-Oeste", "MT": "Centro-Oeste", "MS": "Centro-Oeste", "DF": "Centro-Oeste",
+    "ES": "Sudeste", "MG": "Sudeste", "RJ": "Sudeste", "SP": "Sudeste",
+    "PR": "Sul", "RS": "Sul", "SC": "Sul",
+}
+
+
+def regiao_do_territorio(nome: str, tipo: str) -> str | None:
+    """Deriva a macrorregião de um território a partir do nome+tipo - não existe no banco."""
+    if tipo == "Distrito Federal":
+        return "Centro-Oeste"
+    if tipo == "Estado":
+        uf = ESTADO_UF.get(nome)
+    else:
+        uf = CAPITAL_UF.get(nome)
+    return UF_REGIAO.get(uf) if uf else None
+
+
 EIXO_SLUGS = {
     "governanca": "Governança",
     "politicas-publicas": "Políticas Públicas",

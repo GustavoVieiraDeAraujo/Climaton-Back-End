@@ -13,7 +13,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.db import DB_PATH
-from app.routers import capitais, eixo, gastos, insights, territorios
+from app.routers import capitais, chat, eixo, fontes, gastos, insights, territorios
 
 app = FastAPI(
     title="Climaton Brasil API",
@@ -25,7 +25,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000", "http://localhost:3001", "http://127.0.0.1:3000"],
-    allow_methods=["GET"],
+    allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
 
@@ -34,6 +34,8 @@ app.include_router(capitais.router)
 app.include_router(gastos.router)
 app.include_router(insights.router)
 app.include_router(eixo.router)
+app.include_router(chat.router)
+app.include_router(fontes.router)
 
 
 @app.get("/health")
