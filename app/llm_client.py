@@ -64,6 +64,24 @@ _RELATOS_COMUNIDADE = [
 ]
 
 
+# Espelho da ordem/numeração narrativa comentada em app/page.tsx (Climaton-Front-End) -
+# id é o `id=` real da <section> no DOM, pro atalho de navegação usar (scrollIntoView).
+_SECOES_DO_SITE = [
+    {"numero": None, "id": "inicio", "titulo": "Início", "descricao": "Abertura do site."},
+    {"numero": 1, "id": "historia", "titulo": "História", "descricao": "Contexto narrativo sobre desastres climáticos e gasto público em prevenção vs. recuperação."},
+    {"numero": 2, "id": "dashboard", "titulo": "Dashboard / Eixos", "descricao": "Painel dos 3 eixos de avaliação (Governança, Políticas Públicas, Financiamento) do Painel ClimaBrasil."},
+    {"numero": 3, "id": "territorio", "titulo": "Território", "descricao": "Globo 3D com o Climate Gap (risco x capacidade) por capital brasileira."},
+    {"numero": 4, "id": "prioridades", "titulo": "Prioridades", "descricao": "Lista dos territórios em prioridade Crítica (risco alto + capacidade baixa)."},
+    {"numero": 5, "id": "mapa", "titulo": "Mapa", "descricao": "Mapa do Brasil com risco/capacidade por território."},
+    {"numero": 6, "id": "relatos", "titulo": "Relatos da Comunidade", "descricao": "Protótipo com dados SIMULADOS de relatos de moradores (ver relatos_da_comunidade nos dados)."},
+    {"numero": 7, "id": "cobertura", "titulo": "Cobertura", "descricao": "Transparência sobre quais capitais foram avaliadas pelo Painel ClimaBrasil e quais ficaram de fora."},
+    {"numero": 8, "id": "insights", "titulo": "Insights", "descricao": "Gastos climáticos por órgão e ao longo do tempo."},
+    {"numero": 9, "id": "comparacao", "titulo": "Comparação Brasil x Mundo", "descricao": "Compara a nota do Brasil no ranking global com a média real dos territórios subnacionais brasileiros (ver comparacao_brasil_mundo nos dados)."},
+    {"numero": 10, "id": "acao", "titulo": "Ação", "descricao": "Chamada pra ação / próximos passos."},
+    {"numero": 11, "id": "fontes", "titulo": "Fontes e Créditos", "descricao": "Lista de fontes de dados usadas no site (Painel ClimaBrasil, AdaptaBrasil, SICONFI, ClimateScanner Global)."},
+]
+
+
 def _contexto_dados_cli() -> str:
     """Pré-busca TODOS os dados que as tools de app/tools.py exporiam - substitui o
     tool-calling de verdade (que o `claude -p` não fala no formato OpenAI) por um
@@ -77,6 +95,7 @@ def _contexto_dados_cli() -> str:
     )
 
     dados = {
+        "secoes_do_site": _SECOES_DO_SITE,
         "territorios_criticos": get_territorios_criticos(),
         "gastos_resumo": get_gastos_resumo(),
         "gastos_serie_anual": get_gastos_serie_anual(),

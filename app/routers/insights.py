@@ -40,8 +40,9 @@ def comparacao_brasil_mundo():
 
 
 # Textos de leitura automática por seção - gerados por template a partir de consulta direta ao banco,
-# não por um modelo de linguagem (nenhuma chave de LLM configurada nesta fase). Cada resposta é
-# honesta sobre a própria origem: ver campo "gerado_por".
+# deliberadamente NÃO passam pelo LLM (que hoje já está ligado em POST /chat, ver app/llm_client.py) -
+# aqui o objetivo é um resumo determinístico e sempre igual, não uma resposta conversacional. Cada
+# resposta é honesta sobre a própria origem: ver campo "gerado_por".
 _RESUMOS = {
     "historia": "O Painel ClimaBrasil avalia 51 territórios (26 estados + DF + 24 capitais) em 45 "
                 "itens de governança, políticas públicas e financiamento. A própria metodologia "
@@ -73,5 +74,6 @@ def resumo(secao: str):
         "texto": _RESUMOS[secao],
         "gerado_por": "template",
         "nota": "Resumo gerado por template determinístico a partir de consulta direta ao banco - "
-                "não é saída de um modelo de linguagem. Wiring com LLM real é a próxima etapa.",
+                "não é saída de um modelo de linguagem. Por design: esse resumo fica sempre igual "
+                "pra mesma seção. Para respostas conversacionais em linguagem natural, ver POST /chat.",
     }

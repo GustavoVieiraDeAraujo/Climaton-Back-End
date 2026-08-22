@@ -1,5 +1,5 @@
 """Funções de dado do chatbot. Cada uma reusa exatamente a mesma query dos routers
-correspondentes (app/routers/*.py) — nunca duplicar lógica de SQL, só reexpor pro
+correspondentes (app/routers/*.py), nunca duplicar lógica de SQL, só reexpor pro
 modelo. São chamadas direto (pré-busca, sem tool-calling) por
 app/llm_client.py::_contexto_dados_cli antes de cada chamada ao `claude -p`."""
 

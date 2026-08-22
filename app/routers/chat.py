@@ -1,4 +1,4 @@
-"""Endpoint do AI Copilot. Modelo é a assinatura do Claude Code via CLI (`claude -p`,
+"""Endpoint do assistente de IA. Modelo é a assinatura do Claude Code via CLI (`claude -p`,
 ver app/llm_client.py) - sem tool-calling de verdade, o contexto de dados é todo
 pré-buscado e injetado no prompt em cada chamada.
 
@@ -14,7 +14,7 @@ from app.llm_client import chat_completion
 router = APIRouter(tags=["chat"])
 
 SYSTEM_PROMPT = (
-    "Você é o AI Copilot do Climaton Brasil, um site que mostra dados climáticos brasileiros "
+    "Você é o assistente de IA do Climaton Brasil, um site que mostra dados climáticos brasileiros "
     "auditados (Painel ClimaBrasil, AdaptaBrasil, Gastos Climáticos, SICONFI). Responda sempre em "
     "português do Brasil, de forma direta e curta (2-4 frases). Baseie qualquer número "
     "exclusivamente no JSON de dados fornecido no contexto - nunca invente estatística. Se a "
@@ -22,15 +22,19 @@ SYSTEM_PROMPT = (
     "com o que o site cobre."
 )
 
-# Atalho de economia: pedidos de navegação óbvios resolvem sem chamar o modelo.
+# Atalho de economia: pedidos de navegação óbvios resolvem sem chamar o modelo. Ids batem
+# com o `id=` real das <section> em Climaton-Front-End/components/sections/*.tsx.
 _PADRAO_NAVEGACAO = re.compile(
     r"\b(abr[ae]|v[aá]|leva|mostra|ir\s+para|ver)\b.*\b"
-    r"(hist[oó]ria|dashboard|painel|territ[oó]rio|mapa|insights?|a[cç][aã]o|in[ií]cio)\b",
+    r"(hist[oó]ria|dashboard|painel|territ[oó]rio|priorid|mapa|relatos?|cobertura|insights?|"
+    r"compara[cç][aã]o|a[cç][aã]o|fontes|in[ií]cio)\b",
     re.IGNORECASE,
 )
 _MAPA_PALAVRA_SECAO = {
     "hist": "historia", "dashboard": "dashboard", "painel": "dashboard", "territ": "territorio",
-    "mapa": "mapa", "insight": "insights", "acao": "acao", "ação": "acao", "in[ií]cio": "hero", "inicio": "hero",
+    "priorid": "prioridades", "mapa": "mapa", "relato": "relatos", "cobertura": "cobertura",
+    "insight": "insights", "compara": "comparacao", "acao": "acao", "ação": "acao",
+    "fontes": "fontes", "inicio": "inicio", "início": "inicio",
 }
 
 
